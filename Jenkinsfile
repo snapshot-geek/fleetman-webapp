@@ -65,7 +65,7 @@ pipeline {
           steps {
             container('docker'){
                sh '''
-               apt-get install gettext-base
+               apt add gettext-base
                envsubst < ${WORKSPACE}/deploy.yaml | kubectl apply -f -'
                '''
             }
