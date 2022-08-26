@@ -63,12 +63,12 @@ pipeline {
 
       stage('Deploy to Cluster') {
           steps {
-            container('docker'){
+//             container('docker'){
                sh '''
                apt add gettext-base
                envsubst < ${WORKSPACE}/deploy.yaml | kubectl apply -f -'
                '''
-            }
+//             }
           }
       }
    }
