@@ -8,7 +8,7 @@ pipeline {
               serviceAccountName: jenkins-admin
               containers:
               - name: docker
-                image: docker:latest
+                image: ubuntu:latest
                 command:
                 - cat
                 - apk add gettext
@@ -43,6 +43,15 @@ pipeline {
             container('docker'){
                cleanWs()
                git credentialsId: 'GitHub', url: "https://github.com/${ORGANIZATION_NAME}/${SERVICE_NAME}"
+            }
+         }
+      }
+      stage('Docker Install') {
+         steps {
+            container('docker'){
+               sh '''
+                  sudo apt-get update
+               '''
             }
          }
       }
