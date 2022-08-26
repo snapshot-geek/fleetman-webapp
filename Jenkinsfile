@@ -11,7 +11,6 @@ pipeline {
                 image: ubuntu:latest
                 command:
                 - cat
-                - apk add gettext
                 tty: true
                 volumeMounts:
                   - mountPath: /var/run/docker.sock
