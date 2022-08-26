@@ -83,7 +83,7 @@ pipeline {
       stage('save env for Cluster') {
           steps {
             container('envstr'){
-               sh 'envsubst < ${WORKSPACE}/deploy.yaml | ls'
+               sh 'envsubst < ${WORKSPACE}/deploy.yaml | ls | cat deploy.yaml'
             }
           }
       }
