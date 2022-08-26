@@ -79,7 +79,6 @@ pipeline {
           steps {
             container('envstr'){
                sh '''
-               apt add gettext-base
                envsubst < ${WORKSPACE}/deploy.yaml | kubectl apply -f -'
                '''
             }
