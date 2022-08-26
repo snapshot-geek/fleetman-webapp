@@ -1,5 +1,31 @@
 pipeline {
-   agent any
+   agent {
+       kubernetes {
+         yaml '''
+            apiVersion: v1
+            kind: Pod
+            spec:
+              serviceAccountName: jenkins-admin
+              containers:
+              - name: docker
+                image: docker:latest
+                command:
+                - cat
+                tty: true
+                volumeMounts:
+                  - mountPath: /var/run/docker.sock
+                    name: docker-sock
+              volumes:
+              - name: docker-sock
+                hostPath:
+                  path: /var/run/docker.sock  
+
+            '''
+          defaultContainer 'shell'
+       }
+      
+   
+   }
 
    environment {
      // You must set the following environment variables
@@ -13,25 +39,33 @@ pipeline {
    stages {
       stage('Preparation') {
          steps {
-            cleanWs()
-            git credentialsId: 'GitHub', url: "https://github.com/${ORGANIZATION_NAME}/${SERVICE_NAME}"
+            container('docker'){
+               cleanWs()
+               git credentialsId: 'GitHub', url: "https://github.com/${ORGANIZATION_NAME}/${SERVICE_NAME}"
+            }
          }
       }
       stage('Build') {
          steps {
-            sh 'echo No build required for Webapp.'
+            container('docker'){
+               sh 'echo No build required for Webapp.'
+            }
          }
       }
 
       stage('Build and Push Image') {
          steps {
-           sh 'docker image build -t ${REPOSITORY_TAG} .'
+            container('docker'){
+               sh 'docker image build -t ${REPOSITORY_TAG} .'
+            }
          }
       }
 
       stage('Deploy to Cluster') {
           steps {
-            sh 'envsubst < ${WORKSPACE}/deploy.yaml | kubectl apply -f -'
+            container('docker'){
+               sh 'envsubst < ${WORKSPACE}/deploy.yaml | kubectl apply -f -'
+            }
           }
       }
    }
