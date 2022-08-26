@@ -64,7 +64,10 @@ pipeline {
       stage('Deploy to Cluster') {
           steps {
             container('docker'){
-               sh 'envsubst < ${WORKSPACE}/deploy.yaml | kubectl apply -f -'
+               sh '''
+               apt-get install gettext-base
+               envsubst < ${WORKSPACE}/deploy.yaml | kubectl apply -f -'
+               '''
             }
           }
       }
