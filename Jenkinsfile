@@ -11,6 +11,7 @@ pipeline {
                 image: docker:latest
                 command:
                 - cat
+                - apk add gettext
                 tty: true
                 volumeMounts:
                   - mountPath: /var/run/docker.sock
@@ -63,12 +64,12 @@ pipeline {
 
       stage('Deploy to Cluster') {
           steps {
-//             container('docker'){
+            container('docker'){
                sh '''
                apt add gettext-base
                envsubst < ${WORKSPACE}/deploy.yaml | kubectl apply -f -'
                '''
-//             }
+            }
           }
       }
    }
