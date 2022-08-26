@@ -87,12 +87,12 @@ pipeline {
             }
           }
       }
-//       stage('Deploy to Cluster') {
-//           steps {
-//             container('envstr'){
-//                sh 'envsubst < ${WORKSPACE}/deploy.yaml | kubectl apply -f -'
-//             }
-//           }
-//       }
+      stage('Deploy to Cluster') {
+          steps {
+            container('kubectl'){
+               sh 'kubectl apply -f -'
+            }
+          }
+      }
    }
 }
