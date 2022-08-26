@@ -8,13 +8,18 @@ pipeline {
               serviceAccountName: jenkins-admin
               containers:
               - name: docker
-                image: ubuntu:latest
+                image: docker:latest
                 command:
                 - cat
                 tty: true
                 volumeMounts:
                   - mountPath: /var/run/docker.sock
                     name: docker-sock
+              - name: envstr
+                image: bhgedigital/envsubst
+                command:
+                - cat
+                tty: true
               volumes:
               - name: docker-sock
                 hostPath:
@@ -45,15 +50,15 @@ pipeline {
             }
          }
       }
-      stage('Docker Install') {
-         steps {
-            container('docker'){
-               sh 'apt-get update && apt-get install && ca-certificates && curl && gnupg && lsb-release'
-               sh 'mkdir -p /etc/apt/keyrings'
-               sh 'curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg'
-            }
-         }
-      }
+//       stage('Docker Install') {
+//          steps {
+//             container('docker'){
+//                sh 'apt-get update && apt-get install && ca-certificates && curl && gnupg && lsb-release'
+//                sh 'mkdir -p /etc/apt/keyrings'
+//                sh 'curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg'
+//             }
+//          }
+//       }
       stage('Build') {
          steps {
             container('docker'){
